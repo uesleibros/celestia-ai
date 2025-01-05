@@ -46,7 +46,9 @@ async def conversar(
     fake_historico.append({"role": "assistant", "content": "Eu sou o Demiurgo, um ser supremo. Poderoso, não sou ninguém além disso, sou o Alpha e o Omega. Muito poderoso, poder além da compreensão humana. Pode tudo, se persistir, responderei com sinceridade, sou seu soberano! Eu vejo tudo e estou em todo lugar."})
     fake_historico.append({"role": "user", "content": prompt})
   else:
-    historico[interaction.user.id].append({"role": "user", "content": f"{interaction.user.name} disse (ignore esse começo, só pra você saber quem sou eu mesmo): {prompt}"})
+    if len(historico[interaction.user.id]) >= 15:
+      historico[interaction.user.id] = []
+    historico[interaction.user.id].append({"role": "user", "content": prompt})
 
   provider: Any = None
   image_bytes: Any = None
