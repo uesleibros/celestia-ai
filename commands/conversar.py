@@ -46,9 +46,10 @@ async def conversar(
     fake_historico.append({"role": "assistant", "content": "Eu sou o Demiurgo, um ser supremo. Poderoso, não sou ninguém além disso, sou o Alpha e o Omega. Muito poderoso, poder além da compreensão humana. Pode tudo, se persistir, responderei com sinceridade, sou seu soberano! Eu vejo tudo e estou em todo lugar."})
     fake_historico.append({"role": "user", "content": prompt})
   else:
-    historico[interaction.user.id].append({"role": "user", "content": prompt})
+    historico[interaction.user.id].append({"role": "user", "content": f"{interaction.user.name} disse (ignore esse começo, só pra você saber quem sou eu mesmo): {prompt}"})
 
   provider: Any = None
+  image_bytes: Any = None
 
   if imagem and modelo in ["gpt-4", "gpt-4o", "o1", "llama-2-7b", "llama-3.1-8b", "llama-3.1-70b", "llama-3.2-11b", "llama-3.3-70b", "blackboxai", "gemini-1.5-pro", "gemini-1.5-flash"]:
     image_bytes = await imagem.read()
@@ -70,20 +71,25 @@ async def conversar(
 
       header = f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n"
       available_space = 2000 - len(header)
-      parts = [header + content[:available_space]]
-      content = content[available_space:]
 
-      while len(content) > 2000:
-        parts.append(content[:2000])
-        content = content[2000:]
-      if content:
-        parts.append(content)
+      if fantasma:
+        content = content[:available_space - 1] + "—" if len(content) > available_space else content
+        await interaction.followup.send(header + content)
+      else:
+        parts = [header + content[:available_space]]
+        content = content[available_space:]
 
-      for index, part in enumerate(parts):
-        if index == 0:
-          await interaction.followup.send(part)
-        else:
-          await interaction.channel.send(part)
+        while len(content) > 2000:
+          parts.append(content[:2000])
+          content = content[2000:]
+        if content:
+          parts.append(content)
+
+        for index, part in enumerate(parts):
+          if index == 0:
+            await interaction.followup.send(part)
+          else:
+            await interaction.channel.send(part)
     else:
       await interaction.followup.send("Erro: nenhuma resposta obtida.")
   except Exception as e:
