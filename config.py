@@ -51,15 +51,33 @@ async def conversar(
 			"LLAMA 3.2-11b": "llama-3.2-11b",
 			"LLAMA 3.3-70b": "llama-3.3-70b",
 			"Mixtral 7b": "mixtral-7b",
+			"Mistral Nemo": "mistral-nemo",
+			"Mistral Large": "mistral-large",
 			"Hermes 2 DPO": "hermes-2-dpo",
 			"Hermes 2 Pro": "hermes-2-pro",
 			"Gemini 1.5 Pro": "gemini-1.5-pro",
 			"Gemini 1.5 Flash": "gemini-1.5-flash",
 			"Claude 3.5 Sonnet": "claude-3.5-sonnet",
+			"Command R": "command-r",
+			"Qwen 2-72b": "qwen-2-72b",
+			"Qwen 2.5-72b": "qwen-2.5-72b",
+			"Qwen 2.5-Coder-32b": "qwen-2.5-coder-32b",
+			"QWQ 32b": "qwq-32b",
+			"WizardLM 2-8x22b": "wizardlm-2-8x22b",
+			"Phi 3.5 Mini": " phi-3.5-mini",
 			"Openchat 3.5": "openchat-3.5",
 			"DeepSeek Chat": "deepseek-chat",
-			"DeepSeek Coder": "deepseek-coder"
-		}
+			"DeepSeek Coder": "deepseek-coder",
+			"Nemotron 70b": "nemotron-70b",
+			"OpenHermes 2.5": "openhermes-2.5",
+			"IFM 40b": "ifm-40b",
+			"Zephyr 7b": "zephyr-7b",
+			"Neural 7b": "neural-7b",
+			"DBRX Instruct": "dbrx-instruct",
+			"Midijourney": "midijourney",
+			"Unity": "unity"
+		},
+		default="gpt-4o"
 	)
 ) -> None:
 	await interaction.response.defer(ephemeral=False)
@@ -77,7 +95,7 @@ async def conversar(
 
 	if len(response.choices) > 0:
 		historico[interaction.user.id].append({"role": "assistant", "content": response.choices[0].message.content})
-		await interaction.followup.send(f"{interaction.user.mention} {response.choices[0].message.content}")
+		await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n{response.choices[0].message.content}")
 
 @bot.slash_command(
 	name="imaginar",
@@ -111,7 +129,8 @@ async def imaginar(
 			"Flux Pixel": "flux-pixel",
 			"Flux 4o": "flux-4o",
 			"Playground v2.5": "playground-v2.5"
-		}
+		},
+		default="midjourney"
 	)
 ) -> None:
 	await interaction.response.defer(ephemeral=False)
