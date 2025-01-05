@@ -24,5 +24,5 @@ TEXT_MODELS: Dict[str, str] = {
   "Command R": "command-r",
   "WizardLM 2-8x22b": "wizardlm-2-8x22b",
   "Openchat 3.5": "openchat-3.5",
-  "Uncensored AI": "evil"
+  "Uncensored AI (Não usa memória para Fins Educacionais)": "evil"
 }
