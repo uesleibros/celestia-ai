@@ -4,6 +4,7 @@ from g4f.client import AsyncClient
 from nextcord.ext import commands
 from nextcord.ui import Button, View
 from nextcord import Interaction, SlashOption
+from nextcord.errors import HTTPException
 import nextcord
 import os
 import io
@@ -126,11 +127,19 @@ async def imaginar(
 	)
 ) -> None:
 	await interaction.response.defer(ephemeral=False)
-	response: object = await client.images.generate(
-		model=modelo,
-		prompt=prompt,
-		response_format="url"
-	)
+
+	try:
+		response: object = await client.images.generate(
+			model=modelo,
+			prompt=prompt,
+			response_format="url"
+		)
+	except HTTPException  as e:
+		if e.status == 400 and e.code == 20009:
+			await interaction.followup.send("Erro: O conteúdo gerado foi considerado explícito e não pode ser enviado.")
+			return
+		else:
+			await interaction.followup.send(f"Ocorreu um erro misterioso: {str(e)}")
 
 	if len(response.data) > 0:
 		image_url: str = response.data[0].url
