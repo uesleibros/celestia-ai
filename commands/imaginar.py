@@ -20,9 +20,15 @@ async def imaginar(
 		description="Escolha o modelo de IA.",
 		choices=IMAGE_MODELS,
 		default="midjourney"
+	),
+	fantasma: bool = SlashOption(
+		name="fantasma",
+		description="Ao ativar essa opção, só você poderá ver esse comando sendo executado.",
+		required=False,
+		default=False
 	)
 ) -> None:
-	await interaction.response.defer(ephemeral=False)
+	await interaction.response.defer(ephemeral=fantasma)
 
 	try:
 		response: object = await client.images.generate(

@@ -27,9 +27,15 @@ async def conversar(
     name="imagem",
     description="Adicione uma imagem se deseja utilizá-la em seu prompt.",
     required=False
+  ),
+  fantasma: bool = SlashOption(
+    name="fantasma",
+    description="Ao ativar essa opção, só você poderá ver esse comando sendo executado.",
+    required=False,
+    default=False
   )
 ):
-  await interaction.response.defer(ephemeral=False)
+  await interaction.response.defer(ephemeral=fantasma)
 
   if interaction.user.id not in historico:
     historico[interaction.user.id] = []
