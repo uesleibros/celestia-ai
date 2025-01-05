@@ -66,7 +66,7 @@ async def conversar(
 			"Openchat 3.5": "openchat-3.5",
 			"DBRX Instruct": "dbrx-instruct",
 			"Midijourney": "midijourney",
-			"Unity": "unity"
+			"Uncensored AI": "evil"
 		},
 		default="gpt-4o"
 	)
@@ -110,9 +110,9 @@ async def imaginar(
 		choices={
 			"Midjourney": "midjourney",
 			"Any-Dark": "any-dark",
-			"Dall-E-3": "dall-e-3",
-			"SDXL": "sdxl",
-			"SD-3": "sd-3",
+			"DALL-E 3": "dall-e-3",
+			"Stable Diffusion XL": "sdxl",
+			"Stable Diffusion 3": "sd-3",
 			"Flux": "flux",
 			"Flux Pro": "flux-pro",
 			"Flux Dev": "flux-dev",
