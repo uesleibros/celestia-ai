@@ -47,6 +47,7 @@ async def conversar(
     fake_historico.append({"role": "user", "content": prompt})
   else:
     historico[interaction.user.id].append({"role": "user", "content": prompt})
+
   provider: Any = None
 
   if imagem and modelo in ["gpt-4", "gpt-4o", "o1", "llama-2-7b", "llama-3.1-8b", "llama-3.1-70b", "llama-3.2-11b", "llama-3.3-70b", "blackboxai", "gemini-1.5-pro", "gemini-1.5-flash"]:
@@ -67,12 +68,17 @@ async def conversar(
       if modelo != "evil":
         historico[interaction.user.id].append({"role": "assistant", "content": content})
 
-      header = f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n"
-      available_space = 2000 - len(header)
-      if len(content) > available_space:
-        content = content[:available_space - 1] + "—"
+      available_space = 2000
 
-      await interaction.followup.send(header + content)
+      parts = []
+      while len(content) > available_space:
+        parts.append(content[:available_space])
+        content = content[available_space:]
+      parts.append(content)
+
+      await interaction.followup.send(header + parts[0])
+      for part in parts[1:]:
+        await interaction.followup.send(part)
     else:
       await interaction.followup.send("Erro: nenhuma resposta obtida.")
   except Exception as e:
