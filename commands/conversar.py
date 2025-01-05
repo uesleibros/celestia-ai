@@ -70,16 +70,20 @@ async def conversar(
 
       header = f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n"
       available_space = 2000 - len(header)
+      parts = [header + content[:available_space]]
+      content = content[available_space:]
 
-      parts = []
-      while len(content) > available_space:
-        parts.append(content[:available_space])
-        content = content[available_space:]
-      parts.append(content)
+      while len(content) > 2000:
+        parts.append(content[:2000])
+        content = content[2000:]
+      if content:
+        parts.append(content)
 
-      await interaction.followup.send(header + parts[0])
-      for part in parts[1:]:
-        await interaction.followup.send(part)
+      for index, part in enumerate(parts):
+        if index == 0:
+          await interaction.followup.send(part)
+        else:
+          await interaction.channel.send(part)
     else:
       await interaction.followup.send("Erro: nenhuma resposta obtida.")
   except Exception as e:
