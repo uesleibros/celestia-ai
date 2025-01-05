@@ -1,8 +1,12 @@
 from nextcord import Interaction, SlashOption, File
 from config import bot, client
 from structures.image_models import IMAGE_MODELS
+import logging
 import aiohttp
 import io
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+logger = logging.getLogger()
 
 @bot.slash_command(
 	name="imaginar",
@@ -31,7 +35,7 @@ async def imaginar(
 	await interaction.response.defer(ephemeral=fantasma)
 
 	try:
-		print(f"{interaction.user.name} — gerou uma imagem com o modelo {modelo} usando o prompt: {prompt}")
+		logger.info(f"{interaction.user.name} — pediu uma imagem com o modelo {modelo} usando o prompt: {prompt}")
 		response: object = await client.images.generate(
 			model=modelo,
 			prompt=prompt,
