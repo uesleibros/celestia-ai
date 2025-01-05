@@ -21,6 +21,7 @@ intents: nextcord.Intents = nextcord.Intents.default()
 intents.message_content = True
 bot: commands.Bot = commands.Bot(command_prefix="c.", intents=intents)
 client: AsyncClient = AsyncClient()
+historico: Dict[str, List[Dict[str, str]]] = {}
 app = Flask(__name__)
 
 @bot.event
