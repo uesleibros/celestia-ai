@@ -137,23 +137,24 @@ async def imaginar(
 			prompt=prompt,
 			response_format="url"
 		)
+		
+		if len(response.data) > 0:
+			image_url: str = response.data[0].url
+			async with aiohttp.ClientSession() as session:
+				async with session.get(image_url) as resp:
+					if resp.status == 200:
+						image_bytes: Any = await resp.read()
+						image_file: io.BytesIO = io.BytesIO(image_bytes)
+						image_file.seek(0)
+						await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\nPrompt fornecido: `{prompt}`", file=nextcord.File(image_file, filename="imagem.png"))
+					else:
+						await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\nPrompt fornecido: `{prompt}`\n[Baixar imagem!]({image_url})")
+		else:
+			await interaction.followup.send(f"Erro ao gerar a imagem `{prompt}`.")
 	except Exception  as e:
 		await interaction.followup.send(f"Ocorreu um erro misterioso: {str(e)}")
 		return
 
-	if len(response.data) > 0:
-		image_url: str = response.data[0].url
-		async with aiohttp.ClientSession() as session:
-			async with session.get(image_url) as resp:
-				if resp.status == 200:
-					image_bytes: Any = await resp.read()
-					image_file: io.BytesIO = io.BytesIO(image_bytes)
-					image_file.seek(0)
-					await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\nPrompt fornecido: `{prompt}`", file=nextcord.File(image_file, filename="imagem.png"))
-				else:
-					await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\nPrompt fornecido: `{prompt}`\n[Baixar imagem!]({image_url})")
-	else:
-		await interaction.followup.send(f"Erro ao gerar a imagem `{prompt}`.")
 
 def run_flask_app() -> None:
 	app.run(host="0.0.0.0", port=8080)
