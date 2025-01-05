@@ -1,3 +1,5 @@
 nextcord
 g4f[all]
 aiohttp
+dotenv
+flask

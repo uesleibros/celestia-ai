@@ -2,9 +2,10 @@ from dotenv import load_dotenv
 from typing import Dict, Union, List, Any
 from g4f.client import AsyncClient
 from nextcord.ext import commands
-from nextcord.ui import Button, View
 from nextcord import Interaction, SlashOption
 from nextcord.errors import HTTPException
+from flask import Flask
+import threading
 import nextcord
 import os
 import io
@@ -20,19 +21,7 @@ intents: nextcord.Intents = nextcord.Intents.default()
 intents.message_content = True
 bot: commands.Bot = commands.Bot(command_prefix="c.", intents=intents)
 client: AsyncClient = AsyncClient()
-historico: Dict[str, Any] = {}
-cancelar_resposta: Dict[str, Any] = {}
-
-class InterrupcaoView(View):
-	def __init__(self, interaction: Interaction):
-		super().__init__(timeout=None)
-		self.interaction = interaction
-
-	@nextcord.ui.button(label="Interromper", style=nextcord.ButtonStyle.red, custom_id="interromper")
-	async def interromper(self, button: Button, interaction: Interaction):
-		cancelar_resposta[self.interaction.user.id] = True
-		await interaction.response.send_message("Processo de geração interrompido!", ephemeral=True)
-		self.stop()
+app = Flask(__name__)
 
 @bot.event
 async def on_ready():
@@ -155,4 +144,9 @@ async def imaginar(
 	else:
 		await interaction.followup.send(f"Erro ao gerar a imagem `{prompt}`.")
 
-bot.run(TOKEN)
+def run_flask_app() -> None:
+	app.run(host="0.0.0.0", port=8080)
+
+if __name__ == "__main__":
+	threading.Thread(target=run_flask_app).start()
+	bot.run(TOKEN)
