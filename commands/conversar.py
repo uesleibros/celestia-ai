@@ -68,7 +68,8 @@ async def conversar(
       if modelo != "evil":
         historico[interaction.user.id].append({"role": "assistant", "content": content})
 
-      available_space = 2000
+      header = f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n"
+      available_space = 2000 - len(header)
 
       parts = []
       while len(content) > available_space:
