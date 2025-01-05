@@ -31,6 +31,7 @@ async def imaginar(
 	await interaction.response.defer(ephemeral=fantasma)
 
 	try:
+		print(f"{interaction.user} — gerou uma imagem com o modelo {modelo} usando o prompt: {prompt}")
 		response: object = await client.images.generate(
 			model=modelo,
 			prompt=prompt,
