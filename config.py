@@ -68,8 +68,6 @@ async def conversar(
 		historico[interaction.user.id] = []
 
 	historico[interaction.user.id].append({"role": "user", "content": prompt})
-	view: InterrupcaoView = InterrupcaoView(interaction)
-	cancelar_resposta[interaction.user.id] = False
 
 	response: object = await client.chat.completions.create(
 		model=modelo,
