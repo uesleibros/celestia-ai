@@ -85,6 +85,7 @@ async def conversar(
 		web_search=False
 	)
 
+	print(response)
 	if len(response.choices) > 0:
 		historico[interaction.user.id].append({"role": "assistant", "content": response.choices[0].message.content})
 		await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n{response.choices[0].message.content}")
