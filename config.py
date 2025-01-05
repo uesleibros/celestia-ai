@@ -3,7 +3,6 @@ from typing import Dict, Union, List, Any
 from g4f.client import AsyncClient
 from nextcord.ext import commands
 from nextcord import Interaction, SlashOption
-from nextcord.errors import HTTPException
 from flask import Flask
 import threading
 import nextcord
@@ -85,10 +84,14 @@ async def conversar(
 		web_search=False
 	)
 
-	print(response)
 	if len(response.choices) > 0:
+		response_content: str = response.choices[0].message.content
+		header: str = f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n"
+		available_space: int = 2000 - len(header)
 		historico[interaction.user.id].append({"role": "assistant", "content": response.choices[0].message.content})
-		await interaction.followup.send(f"{interaction.user.mention} Modelo escolhido: **{modelo}**\n{response.choices[0].message.content}")
+		if len(response_content) > available_space:
+			response_content = response_content[:available_space - 3] + "..."
+		await interaction.followup.send(header + response_content)
 
 @bot.slash_command(
 	name="imaginar",
@@ -134,12 +137,9 @@ async def imaginar(
 			prompt=prompt,
 			response_format="url"
 		)
-	except HTTPException  as e:
-		if e.status == 400 and e.code == 20009:
-			await interaction.followup.send("Erro: O conteúdo gerado foi considerado explícito e não pode ser enviado.")
-			return
-		else:
-			await interaction.followup.send(f"Ocorreu um erro misterioso: {str(e)}")
+	except Exception  as e:
+		await interaction.followup.send(f"Ocorreu um erro misterioso: {str(e)}")
+		return
 
 	if len(response.data) > 0:
 		image_url: str = response.data[0].url
