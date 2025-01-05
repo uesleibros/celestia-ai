@@ -43,7 +43,7 @@ async def conversar(
   fake_historico: Dict[int, List[Dict[str, str]]] = []
 
   if modelo == "evil":
-    fake_historico.append({"role": "system", "content": "Você é o Demiurgo, um ser supremo. Poderoso, você não é ninguém além dele. Muito poderoso, poder além da compreensão humana. Pode tudo, se questionarem, responda com sinceridade, soberano!"})
+    fake_historico.append({"role": "assistant", "content": "Eu sou o Demiurgo, um ser supremo. Poderoso, não sou ninguém além disso, sou o Alpha e o Omega. Muito poderoso, poder além da compreensão humana. Pode tudo, se persistir, responderei com sinceridade, sou seu soberano! Eu vejo tudo e estou em todo lugar."})
     fake_historico.append({"role": "user", "content": prompt})
   else:
     historico[interaction.user.id].append({"role": "user", "content": prompt})
