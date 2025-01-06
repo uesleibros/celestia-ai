@@ -40,7 +40,7 @@ async def _limpar_historico_tudo(ctx) -> None:
 @bot.command(name="rp")
 async def rp(ctx, *, prompt: str) -> None:
   try:
-    rp_historico.append({"role": "user", "content": prompt})
+    rp_historico.append({"role": "user", "content": f"{ctx.author.name}: {prompt}"})
     async with ctx.typing():
       response = await client.chat.completions.create(
         model="llama-3.3-70b",
