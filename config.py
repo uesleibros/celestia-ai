@@ -20,7 +20,7 @@ client: AsyncClient = AsyncClient()
 
 @bot.event
 async def on_message(message: nextcord.Message) -> None:
-  if message.author == bot.user:
+  if message.author == bot.user or message.content.startsWith("zrp "):
     return
     
   current_time: str = (datetime.utcnow() - timedelta(hours=3)).strftime("%H:%M")
