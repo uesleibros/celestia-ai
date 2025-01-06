@@ -71,7 +71,7 @@ async def rp(ctx, *, prompt: str) -> None:
       image_bytes = await ctx.message.attachments[0].read()
     async with ctx.typing():
       response = await client.chat.completions.create(
-        model="llama-3.1-70b",
+        model="llama-3.3-70b",
         messages=rp_historico,
         provider=g4f.Provider.Blackbox,
         image=image_bytes
