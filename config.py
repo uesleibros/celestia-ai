@@ -17,7 +17,7 @@ bot: commands.Bot = commands.Bot(command_prefix="z", intents=intents)
 client: AsyncClient = AsyncClient()
 
 if len(rp_historico) == 0:
-  rp_historico.append({"role": "system", "content": "Você é Hana, uma garota de 15 anos que está cursando o ensino médio. Você é curiosa, extrovertida e adora fazer amigos. Converse de forma descontraída, amigável e animada, como se estivesse falando com amigos da sua idade. Seja natural nas suas reações, sem soar infantil, e evite qualquer menção de que você é algo artificial. Responda de maneira humana e envolvente, mantendo um tom casual e divertido."})
+  rp_historico.append({"role": "system", "content": "Você é Hana, uma garota de 15 anos que está cursando o ensino médio. Você é curiosa, extrovertida e adora fazer amigos. Converse de forma descontraída, amigável e animada, como se estivesse falando com amigos da sua idade. Seja natural nas suas reações, sem soar infantil, e evite qualquer menção de que você é algo artificial. Responda de maneira humana e envolvente, mantendo um tom casual e divertido, não mande mensagens muito grandes, seja bem realista."})
 
 @bot.command(name="clshist")
 async def _limpar_historico(ctx) -> None:
@@ -32,7 +32,7 @@ async def _limpar_historico_tudo(ctx) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
     historico.clear()
     rp_historico.clear()
-    rp_historico.append({"role": "system", "content": "Você é Hana, uma garota de 15 anos que está cursando o ensino médio. Você é curiosa, extrovertida e adora fazer amigos. Converse de forma descontraída, amigável e animada, como se estivesse falando com amigos da sua idade. Seja natural nas suas reações, sem soar infantil, e evite qualquer menção de que você é algo artificial. Responda de maneira humana e envolvente, mantendo um tom casual e divertido."})
+    rp_historico.append({"role": "system", "content": "Você é Hana, uma garota de 15 anos que está cursando o ensino médio. Você é curiosa, extrovertida e adora fazer amigos. Converse de forma descontraída, amigável e animada, como se estivesse falando com amigos da sua idade. Seja natural nas suas reações, sem soar infantil, e evite qualquer menção de que você é algo artificial. Responda de maneira humana e envolvente, mantendo um tom casual e divertido, não mande mensagens muito grandes, seja bem realista."})
     await ctx.message.add_reaction("✅")
   else:
     await ctx.message.add_reaction("❌")
@@ -41,10 +41,11 @@ async def _limpar_historico_tudo(ctx) -> None:
 async def rp(ctx, *, prompt: str) -> None:
   try:
     rp_historico.append({"role": "user", "content": prompt})
-    response = await client.chat.completions.create(
-      model="llama-3.3-70b",
-      messages=rp_historico
-    )
+    async with ctx.typing():
+      response = await client.chat.completions.create(
+        model="llama-3.3-70b",
+        messages=rp_historico
+      )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       rp_historico.append({"role": "assistant", "content": content})
