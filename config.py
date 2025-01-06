@@ -41,11 +41,10 @@ async def _limpar_historico_tudo(ctx) -> None:
 async def rp(ctx, *, prompt: str) -> None:
   try:
     rp_historico.append({"role": "user", "content": prompt})
-    async with ctx.typing():
-      response = await client.chat.completions.create(
-        model="llama-3.3-70b",
-        messages=rp_historico
-      )
+    response = await client.chat.completions.create(
+      model="llama-3.3-70b",
+      messages=rp_historico
+    )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       rp_historico.append({"role": "assistant", "content": content})
