@@ -86,7 +86,7 @@ async def analyze_image(prompt: str, image: bytes) -> str:
   try:
     response = await client.chat.completions.create(
       model="llama-3.1-70b",
-      messages=[{"role": "user", "content": prompt + ". Responds em português"}]
+      messages=[{"role": "user", "content": prompt + ". Responda em português"}]
       image=image
     )
 
@@ -114,7 +114,7 @@ async def rp(ctx, *, prompt: str) -> None:
       if image_response:
         prompt = f"[DADOS DA IMAGEM]:\n{image_response}. O que você acha disso?"
 
-    rp_historico.append({"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}")
+    rp_historico.append({"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"})
     async with ctx.typing():
       response = await client.chat.completions.create(
         model="llama-3.3-70b",
