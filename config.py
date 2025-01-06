@@ -87,12 +87,12 @@ async def analyze_image(prompt: str, image: bytes) -> str:
     response = await client.chat.completions.create(
       model="llama-3.1-70b",
       messages=[{"role": "user", "content": prompt + ". Responda em português"}],
+      provider=g4f.Provider.Blackbox,
       image=image
     )
 
     if len(response.choices) > 0:
       return response.choices[0].message.content
-
     return None
   except Exception as e:
     return None
@@ -112,7 +112,7 @@ async def rp(ctx, *, prompt: str) -> None:
       image_bytes = await ctx.message.attachments[0].read()
       image_response = await analyze_image(prompt, image_bytes)
       if image_response:
-        prompt = f"Você analisou isso aqui ok? Disse isso da imagem que lhe mandei:\n{image_response}. O que você acha disso?"
+        prompt = f"{image_response}\n. O que você acha disso? Imagine que esses dados foram retirados de uma imagem e que analisou ela."
 
     rp_historico.append({"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"})
     async with ctx.typing():
