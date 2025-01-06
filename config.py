@@ -1,7 +1,7 @@
 import os
 import nextcord
 import g4f
-import datetime
+from datetime import datetime
 from utils.historico import historico, rp_historico, memorias
 from dotenv import load_dotenv
 from nextcord.ext import commands
