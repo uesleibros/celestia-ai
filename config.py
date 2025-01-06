@@ -58,6 +58,22 @@ async def _limpar_historico_tudo(ctx) -> None:
   else:
     await ctx.message.add_reaction("❌")
 
+@bot.command(name="addlorecd")
+async def _adicionar_lore_cuidado(ctx, *, prompt: str) -> None:
+  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
+    rp_historico.insert(1, {"role": "system", "content": f"O {ctx.author.name} adicionou coisas na sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo, foram simpelsmente colocados a força na sua cabeça, você sente dor de cabeça com isso, confusa, mas tenta se manter forte."})
+    await ctx.message.add_reaction("✅")
+  else:
+    await ctx.message.add_reaction("❌")
+
+@bot.command(name="rmvlorecd")
+async def _remover_lore_cuidado(ctx, *, prompt: str) -> None:
+  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
+    rp_historico.insert(1, {"role": "system", "content": f"O {ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo, como se tivesse arrancado algo importante."})
+    await ctx.message.add_reaction("✅")
+  else:
+    await ctx.message.add_reaction("❌")
+    
 @bot.command(name="rmvlore")
 async def _remover_lore(ctx, *, prompt: str) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
@@ -75,7 +91,7 @@ async def _remover_lore(ctx, *, prompt: str) -> None:
       indices = response.choices[0].message.content.strip().split(',')
       for index in sorted(map(int, indices), reverse=True):
         del rp_historico[index]
-      rp_historico.insert(1, {"role": "system", "content": f"O {ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo."})
+      rp_historico.insert(1, {"role": "system", "content": f"O {ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo, como se tivesse arrancado algo importante."})
       await ctx.message.add_reaction("✅")
     except Exception:
       await ctx.message.add_reaction("❌")
