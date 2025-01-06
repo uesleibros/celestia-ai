@@ -112,7 +112,7 @@ async def rp(ctx, *, prompt: str) -> None:
       image_bytes = await ctx.message.attachments[0].read()
       image_response = await analyze_image(prompt, image_bytes)
       if image_response:
-        prompt = f"{image_response}\n. O que você acha disso? Imagine que esses dados foram retirados de uma imagem e que analisou ela."
+        prompt = f"A imagem que você me enviou foi analisada. Aqui está o que foi interpretado: '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
     rp_historico.append({"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"})
     async with ctx.typing():
