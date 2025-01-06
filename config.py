@@ -1,6 +1,7 @@
 import os
 import nextcord
-from utils.historico import historico, rp_historico
+import g4f
+from utils.historico import historico, rp_historico, memorias
 from dotenv import load_dotenv
 from nextcord.ext import commands
 from g4f.client import AsyncClient
@@ -34,6 +35,11 @@ async def _limpar_historico(ctx) -> None:
 async def _limpar_historico_tudo(ctx) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
     historico.clear()
+
+    for item in rp_historico:
+      if item["role"] == "user":
+        memorias.append(item["content"][:100])
+        memorias.append(ctx.author.name)
     rp_historico.clear()
     add_system_treatment()
     await ctx.message.add_reaction("✅")
@@ -43,11 +49,21 @@ async def _limpar_historico_tudo(ctx) -> None:
 @bot.command(name="rp")
 async def rp(ctx, *, prompt: str) -> None:
   try:
+    if len(memorias) > 0:
+      memory_snippet = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:5]) + f". Quem apagou sua memória foi o {memorias[-1]}"
+      rp_historico.insert(1, {"role": "system", "content": memory_snippet})
+      memorias.clear()
     rp_historico.append({"role": "user", "content": f"{ctx.author.name}: {prompt}"})
+
+    image_bytes: bytes = None
+    if ctx.message.attachments:
+      image_bytes = ctx.message.attachments[0].read()
     async with ctx.typing():
       response = await client.chat.completions.create(
         model="llama-3.3-70b",
         messages=rp_historico
+        provider=g4f.Provider.Blackbox
+        image=image_bytes
       )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
