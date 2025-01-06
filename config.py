@@ -74,7 +74,7 @@ async def _remover_lore(ctx, *, prompt: str) -> None:
       indices = response.choices[0].message.content.strip().split(',')
       for index in sorted(map(int, indices), reverse=True):
         del rp_historico[index]
-      rp_historico.insert(1, {"role": "system", "content": f"O {ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo.")
+      rp_historico.insert(1, {"role": "system", "content": f"O {ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo."})
       await ctx.message.add_reaction("✅")
     except Exception:
       await ctx.message.add_reaction("❌")
@@ -88,7 +88,8 @@ async def rp(ctx, *, prompt: str) -> None:
       memory_snippet = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f".Apagou sua memória foi o {memorias[-1]}"
       rp_historico.insert(1, {"role": "system", "content": memory_snippet})
       memorias.clear()
-    rp_historico.append({"role": "user", "content": f"{ctx.author.name}: {prompt}"})
+    current_time: str= datetime.now().strftime("%H:%M")
+    rp_historico.append({"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"})
 
     image_bytes: bytes = None
     if ctx.message.attachments:
