@@ -61,7 +61,7 @@ async def _limpar_historico_tudo(ctx) -> None:
 async def rp(ctx, *, prompt: str) -> None:
   try:
     if len(memorias) > 0:
-      memory_snippet = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Quem apagou sua memória foi o {memorias[-1]}"
+      memory_snippet = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f".Apagou sua memória foi o {memorias[-1]}"
       rp_historico.insert(1, {"role": "system", "content": memory_snippet})
       memorias.clear()
     rp_historico.append({"role": "user", "content": f"{ctx.author.name}: {prompt}"})
