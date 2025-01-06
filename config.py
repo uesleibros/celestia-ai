@@ -66,6 +66,29 @@ async def _adicionar_lore_cuidado(ctx, *, prompt: str) -> None:
   else:
     await ctx.message.add_reaction("❌")
 
+@bot.command(name="addlore")
+async def _adicionar_lore(ctx, *, prompt: str) -> None:
+  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
+    try:
+      rp_historico_str = [
+        f"{i}: {item['role']} - {item['content']}" for i, item in enumerate(rp_historico)
+      ]
+      response = await client.chat.completions.create(
+        model="llama-3.3-70b",
+        messages=[
+          {"role": "system", "content": "Você é uma IA que analisa um histórico de mensagens e retorna os índices de mensagens que precisam ser atualizadas ou inseridas com base no contexto fornecido."},
+          {"role": "user", "content": f"Analisando este histórico: {', '.join(rp_historico_str)}. Onde poderia ser inserido o seguinte lore relacionado a '{prompt}'? Responda apenas com o índice em que deve ser inserido."}
+        ]
+      )
+      index = response.choices[0].message.content.strip()
+      index = int(index) if index.isdigit() else len(rp_historico) 
+      rp_historico.insert(index, {"role": "system", "content": f"O {ctx.author.name} adicionou coisas na sua memória relacionada a {prompt}. Você se sente confusa ao ser questionada sobre coisas do tipo, foram simplesmente colocados à força na sua cabeça, você sente dor de cabeça com isso, confusa, mas tenta se manter forte."})
+      await ctx.message.add_reaction("✅")
+    except Exception:
+      await ctx.message.add_reaction("❌")
+  else:
+    await ctx.message.add_reaction("❌")
+
 @bot.command(name="rmvlorecd")
 async def _remover_lore_cuidado(ctx, *, prompt: str) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
