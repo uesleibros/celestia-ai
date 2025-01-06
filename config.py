@@ -46,6 +46,17 @@ async def _limpar_historico_tudo(ctx) -> None:
   else:
     await ctx.message.add_reaction("❌")
 
+@bot.command(name="clshistallmem")
+async def _limpar_historico_tudo(ctx) -> None:
+  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
+    historico.clear()
+    memorias.clear()
+    rp_historico.clear()
+    add_system_treatment()
+    await ctx.message.add_reaction("✅")
+  else:
+    await ctx.message.add_reaction("❌")
+
 @bot.command(name="rp")
 async def rp(ctx, *, prompt: str) -> None:
   try:
@@ -57,7 +68,7 @@ async def rp(ctx, *, prompt: str) -> None:
 
     image_bytes: bytes = None
     if ctx.message.attachments:
-      image_bytes = ctx.message.attachments[0].read()
+      image_bytes = await ctx.message.attachments[0].read()
     async with ctx.typing():
       response = await client.chat.completions.create(
         model="llama-3.3-70b",
