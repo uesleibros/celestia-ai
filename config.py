@@ -43,7 +43,7 @@ async def rp(ctx, *, prompt: str) -> None:
     rp_historico.append({"role": "user", "content": prompt})
     async with ctx.typing():
       response = await client.chat.completions.create(
-        model="llama-2-7b",
+        model="llama-3.3-70b",
         messages=rp_historico
       )
     if len(response.choices) > 0:
