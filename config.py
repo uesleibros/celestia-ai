@@ -20,11 +20,12 @@ client: AsyncClient = AsyncClient()
 
 @bot.event
 async def on_message(message: nextcord.Message) -> None:
-  if message.author == bot.user or message.content.startsWith("zrp "):
+  if message.author == bot.user:
     return
-    
-  current_time: str = (datetime.utcnow() - timedelta(hours=3)).strftime("%H:%M")
-  rp_historico.insert(1, {"role": "system", "content": f"[{current_time}] {message.author.name}: {message.content} | ele disse isso, considere as opiniões dele sempre, bom para saber o que ele pensa e sua personalidade."})
+
+  if !message.content.startsWith("zrp "):
+    current_time: str = (datetime.utcnow() - timedelta(hours=3)).strftime("%H:%M")
+    rp_historico.insert(1, {"role": "system", "content": f"[{current_time}] {message.author.name}: {message.content} | ele disse isso, considere as opiniões dele sempre, bom para saber o que ele pensa e sua personalidade."})
   await bot.process_commands(message)
 
 def add_system_treatment() -> None:
