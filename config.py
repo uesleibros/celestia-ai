@@ -86,7 +86,7 @@ async def analyze_image(prompt: str, image: bytes) -> str:
   try:
     response = await client.chat.completions.create(
       model="llama-3.1-70b",
-      messages=[{"role": "user", "content": prompt + ". Responda em português"}]
+      messages=[{"role": "user", "content": prompt + ". Responda em português"}],
       image=image
     )
 
