@@ -44,10 +44,9 @@ async def rp(ctx, *, prompt: str) -> None:
 			model="llama-3.3-70b",
 			messages=rp_historico
 		)
-
-	if len(response.choices) > 0:
-		content: str = response.choices[0].message.content
-		rp_historico.append({"role": "assistant", "content": content})
+		if len(response.choices) > 0:
+			content: str = response.choices[0].message.content
+			rp_historico.append({"role": "assistant", "content": content})
 
 	  if len(content) > 2000:
 			content = content[:1999] + "—"
