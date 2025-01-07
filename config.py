@@ -62,7 +62,7 @@ async def _limpar_historico_tudo(ctx) -> None:
 @bot.command(name="add-lore")
 async def _adicionar_lore(ctx, *, prompt: str) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
-    rp_historico.append({"role": "system", "content": f"O {ctx.author.name} adicionou coisas na sua memória relacionada a {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, foram simpelsmente colocados a força na sua cabeça, você sente dor de cabeça com isso, confusa, mas tenta se manter forte e entende e logo segue o que foi colocado, só não entende direito mas compreende."})
+    rp_historico.append({"role": "system", "content": f"O memórias de {ctx.author.name} vem a sua cabeça, coisas sobre: {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, foram simpelsmente colocados a força na sua cabeça, você sente dor de cabeça com isso, confusa, mas tenta se manter forte e entende e logo segue o que foi colocado, só não entende direito mas compreende."})
     await ctx.message.add_reaction("✅")
   else:
     await ctx.message.add_reaction("❌")
@@ -70,7 +70,7 @@ async def _adicionar_lore(ctx, *, prompt: str) -> None:
 @bot.command(name="remove-lorecd")
 async def _remover_lore_cuidado(ctx, *, prompt: str) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
-    rp_historico.append({"role": "system", "content": f"O {ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, como se tivesse arrancado algo importante, mas não dá muita bola, isso até alguém insistir muito no assunto."})
+    rp_historico.append({"role": "system", "content": f"{ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, como se tivesse arrancado algo importante, mas não dá muita bola, isso até alguém insistir muito no assunto."})
     await ctx.message.add_reaction("✅")
   else:
     await ctx.message.add_reaction("❌")
