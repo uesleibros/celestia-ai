@@ -25,7 +25,7 @@ def add_system_treatment() -> None:
 if len(rp_historico) == 0:
   add_system_treatment()
 
-@bot.command(name="clshist")
+@bot.command(name="clear-history")
 async def _limpar_historico(ctx) -> None:
   if ctx.author.id in historico:
     del historico[ctx.author.id]
@@ -33,7 +33,7 @@ async def _limpar_historico(ctx) -> None:
   else:
     await ctx.message.add_reaction("❌")
 
-@bot.command(name="clshistall")
+@bot.command(name="clear-allhistory")
 async def _limpar_historico_tudo(ctx) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
     historico.clear()
@@ -48,7 +48,7 @@ async def _limpar_historico_tudo(ctx) -> None:
   else:
     await ctx.message.add_reaction("❌")
 
-@bot.command(name="clshistallmem")
+@bot.command(name="clear-allhistorymemory")
 async def _limpar_historico_tudo(ctx) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
     historico.clear()
@@ -103,7 +103,7 @@ async def analyze_image(prompt: str, image: bytes) -> str:
   try:
     response = await client.chat.completions.create(
       model="llama-3.1-70b",
-      messages=[{"role": "user", "content": prompt + ". Responda em português"}],
+      messages=[{"role": "user", "content": prompt + ". Responda em português com todos os detalhes da imagem, bem detalhado mesmo"}],
       provider=g4f.Provider.Blackbox,
       image=image
     )
@@ -141,7 +141,7 @@ async def rp(ctx, *, prompt: str) -> None:
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       rp_historico.append(prompt_obj)
-      rp_historico.append({"role": "assistant", "content": f"[{current_time}] Aizo: {content}"})
+      rp_historico.append({"role": "assistant", "content": content})
       if len(content) > 2000:
         content = content[:1997] + "..."
       await ctx.reply(content)
