@@ -25,7 +25,7 @@ async def on_message(message: nextcord.Message) -> None:
 
   if not message.content.startswith("zrp "):
     current_time: str = (datetime.utcnow() - timedelta(hours=3)).strftime("%H:%M")
-    rp_historico.insert(1, {"role": "user", "content": f"ás [{current_time}] {message.author.name} disse: {message.content} | ele disse isso, considere as opiniões dele sempre, bom para saber o que ele pensa e sua personalidade."})
+    rp_historico.insert(1, {"role": "system", "content": f"[{current_time}] {message.author.name}: {message.content} | ele disse isso, considere as opiniões dele sempre, bom para saber o que ele pensa e sua personalidade."})
   await bot.process_commands(message)
 
 def add_system_treatment() -> None:
