@@ -1,6 +1,7 @@
 import os
 import nextcord
 import g4f
+from typing import Dict
 from datetime import datetime, timedelta
 from utils.historico import historico, rp_historico, memorias
 from dotenv import load_dotenv
@@ -130,14 +131,16 @@ async def rp(ctx, *, prompt: str) -> None:
       if image_response:
         prompt = f"Interprete isso (isso são dados de uma imagem completamente analisada): '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
-    rp_historico.append({"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"})
+    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"}
+    
     async with ctx.typing():
       response = await client.chat.completions.create(
         model="llama-3.3-70b",
-        messages=rp_historico
+        messages=rp_historico + [prompt_obj]
       )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
+      rp_historico.append(prompt_obj)
       rp_historico.append({"role": "assistant", "content": content})
       if len(content) > 2000:
         content = content[:1997] + "..."
