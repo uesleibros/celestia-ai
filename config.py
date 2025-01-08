@@ -129,10 +129,10 @@ async def analyze_image(prompt: str, image: bytes) -> str:
 
 @bot.command(name="rp")
 async def rp(ctx, *, prompt: str) -> None:
+  send_msg: bool = True
   try:
-    send_msg: bool = True
     if len(memorias) > 0:
-      memory_snippet = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Apagou sua memória foi o {memorias[-1]}, ninguém te contou, você tem vagas lembranças de alguém fazendo isso."
+      memory_snippet: str = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Apagou sua memória foi o {memorias[-1]}, ninguém te contou, você tem vagas lembranças de alguém fazendo isso."
       rp_historico.insert(1, {"role": "system", "content": memory_snippet})
       memorias.clear()
     current_time: str = (datetime.utcnow() - timedelta(hours=3)).strftime("%H:%M")
@@ -173,4 +173,5 @@ async def rp(ctx, *, prompt: str) -> None:
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
-    await ctx.reply("Não entendi, poderia tentar de novo?" + str(e))
+    if send_msg:
+      await ctx.reply("Não entendi, poderia tentar de novo?" + str(e))
