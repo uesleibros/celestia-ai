@@ -169,7 +169,9 @@ async def rp(ctx, *, prompt: str) -> None:
         content = content[:1997] + "..."
       if send_msg:
         await ctx.reply(content)
+      else:
+        return
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
-    await ctx.reply("Não entendi, poderia tentar de novo?")
+    await ctx.reply("Não entendi, poderia tentar de novo? debug:" + e)
