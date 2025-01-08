@@ -171,7 +171,6 @@ async def rp(ctx, *, prompt: str) -> None:
           await asyncio.sleep(1)
         await ctx.reply(content)
       else:
-        await ctx.defer()
         return
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
