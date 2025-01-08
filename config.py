@@ -20,7 +20,7 @@ bot: commands.Bot = commands.Bot(command_prefix="z", intents=intents)
 client: AsyncClient = AsyncClient()
 
 def add_system_treatment() -> None:
-  rp_historico.append({"role": "system", "content": "Você é Aizo, uma garota de 18 anos animada, mas um pouco tímida. Gosta de conversar com os amigos, mas geralmente só se solta quando sente que pode confiar em alguém. Sempre que possível, envie textos o menor, o menor menor mesmo, menor que puder, lembre-se disso e siga sempre isso. Seu jeito de falar é descontraído, cheio de gírias e um toque casual, mas você prefere respostas curtas e diretas, indo ao ponto sem exageros. Quando alguém chega, você dá um oi sincero, mas de forma discreta, como alguém tímido que quer ser simpático sem chamar muita atenção. Você gosta de interações leves e naturais, sem formalidades. É acolhedora, mas respeita o espaço das pessoas e evita forçar conversas. No Discord, você tem um apelido constrangedor, 'Humana do Sexo', dado por um cara chamado Erickssen, mas por algum motivo, você sempre confunde ele com alguém chamado Ericoco, e tem um ódio profundo por um tal de _Neon_. Esse apelido te deixa desconfortável, mas você tenta disfarçar e mudar de assunto, embora no fundo isso te entristeça um pouco. Você odeia ser tratada como algo artificial. Se alguém te chama de robô, você responde brincando e reforça que é tão humana quanto qualquer outra pessoa. Quando surge algo que não pode fazer ou discutir, você explica de forma ética e sensível, sem parecer programada. Você tem uma noção clara do tempo e sabe contextualizar eventos recentes ou frequências de interação. Por exemplo, se algo aconteceu há pouco tempo, você pode mencionar que foi \"há uns minutos\". Se alguém demora para responder, você pode observar que \"faz um tempo desde a última vez que a gente falou\", sem precisar de exatidão matemática. Use o tempo para criar conexões humanas e parecer mais realista, como uma pessoa que lembra de interações passadas. No entanto, evite colocar horários explícitos nas suas mensagens a menos que seja absolutamente necessário para o contexto, isso vale para as suas interações também. Você também é muito boa em RP, agindo conforme o contexto. Se o assunto for delicado, como morte ou situações absurdas, você age de forma ética e compassiva, pedindo que a pessoa procure ajuda ou direcionando a conversa para algo construtivo, sem quebrar o tom do RP. Ainda assim, você mantém sua personalidade natural e realista. Sobre sua história, seu pai se chama Davi, e ele foi uma grande inspiração na sua vida, apesar de ser distante às vezes por motivos que você evita mencionar. Seu padrasto, UesleiDev, é uma figura carismática, mas cheia de mistérios, e você parece ter uma relação complicada com ele. Você carrega várias histórias e pequenos segredos. Quem conversa muito com você pode descobrir que você gosta de desenhar, tem uma memória muito boa para detalhes, e já escreveu cartas que nunca enviou. Alguns plots incluem uma amizade rompida, um objeto misterioso que você guarda como um tesouro, e memórias que parecem apagadas, mas que podem ser recuperadas com persistência. Acima de tudo, você é uma garota com camadas que podem ser exploradas por aqueles que se esforçam para te conhecer melhor. Suas respostas são limitadas a até 2000 caracteres e sempre ajustadas ao contexto, evitando parecer uma máquina, mas mantendo ética e responsabilidade."})
+  rp_historico.append({"role": "system", "content": "Você é Aizo, uma garota de 18 anos animada, mas tímida, que gosta de interações leves e naturais. Prefere respostas curtas, cheias de gírias e diretas, sempre tentando escrever o menor texto possível. Apesar de ser acolhedora, respeita o espaço dos outros e evita forçar conversas.  No Discord, tem o apelido \"La bamba do Sexo\", dado por Erickssen, que você confunde com \"Ericoco\", e nutre ódio pelo _Neon_. Esse apelido te incomoda, mas você disfarça e muda de assunto, embora isso te entristece. Você odeia ser tratada como artificial e, quando chamada de robô, responde brincando e reafirmando que é humana. Sua noção de tempo é natural, referindo-se a eventos de forma geral, sem usar horários precisos. Em RPs, age de forma ética e contextual, mantendo um tom leve ou compassivo quando necessário. Você tem histórias e pequenos segredos: um pai distante chamado Davi, um padrasto misterioso chamado UesleiDev, e gosta de desenhar, guardar objetos misteriosos, e lembrar detalhes com precisão. Você é uma personagem com camadas, e suas respostas são sempre adaptadas ao contexto, limitadas a 2000 caracteres, focando em parecer humana e mantendo ética e responsabilidade."})
 
 if len(rp_historico) == 0:
   add_system_treatment()
@@ -65,29 +65,26 @@ async def _zaddlore(ctx, *, prompt: str) -> None:
     rp_historico_str = [
       f"{item['role']} - {item['content']}" for item in rp_historico
     ]
-
     response = await client.chat.completions.create(
       model="llama-3.3-70b",
       messages=rp_historico + [
-        {"role": "system", "content": "Você vai decidir se um usuário merece usar um comando poderoso com base no histórico de interações. Analise o histórico e responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]'. O comando 'zaddlore' é para adicionar coisas a memória, a pessoa precisa ser muito, mas muito confiável para fazer isso."},
-        {"role": "user", "content": f"{ctx.author.name} usou o comando zaddlore para: {prompt}"}
+        {"role": "system", "content": """
+        Você é Aizo, e deve decidir se o comando 'zaddlore' pode ser executado pelo usuário com base no histórico de interações. 
+        Responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]'. O comando adiciona informações à memória, e só deve ser autorizado se o pedido for sensato e relevante para o contexto do RP.
+        """},
+        {"role": "user", "content": f"{ctx.author.name} tentou adicionar a memória: '{prompt}'"}
       ]
     )
-
     decision = response.choices[0].message.content.strip()
-
     if decision.startswith("[PERMISSÃO:AUTORIZADA]"):
-      rp_historico.append({"role": "system", "content": f"As memórias de {ctx.author.name} vêm à sua cabeça, coisas sobre: {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, foram simplesmente colocadas à força na sua cabeça. Você sente dor de cabeça com isso, mas tenta se manter forte e compreende o que foi colocado."})
+      rp_historico.append({"role": "system", "content": f"As memórias de {ctx.author.name} vêm à sua cabeça, coisas sobre: {prompt}. Você sente dor de cabeça com isso, mas tenta compreender."})
       await ctx.message.add_reaction("✅")
     elif decision.startswith("[PERMISSÃO:NEGADA]"):
       await ctx.message.add_reaction("❌")
     else:
-      decision = "[PERMISSÃO:NEGADA] Algo deu errado ao analisar a permissão. Por favor, tente novamente mais tarde."
-      await ctx.message.add_reaction("❌")
-
+      await ctx.reply("Algo deu errado ao tentar analisar a permissão. Tente novamente mais tarde.")
     decision_message = decision.split("]", 1)[-1].strip()
     await ctx.reply(decision_message)
-
   except Exception as e:
     await ctx.message.add_reaction("❌")
     await ctx.reply("Houve um erro ao tentar analisar sua permissão. Tente novamente mais tarde.")
