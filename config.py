@@ -162,12 +162,10 @@ async def rp(ctx, *, prompt: str) -> None:
         if cmd["tipo"] == "REAGIR":
           emoji = bot.get_emoji(cmd["acao"])
           await ctx.message.add_reaction(emoji if emoji else cmd["acao"])
+      
       if len(content) > 2000:
         content = content[:1997] + "..."
-      if send_msg:
-        await ctx.reply(content)
-      else:
-        return
+      await ctx.reply(content)
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
