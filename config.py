@@ -153,12 +153,12 @@ async def rp(ctx, *, prompt: str) -> None:
       )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
-      commands: List[Dict[str, str]] = extract_commnads(content)
+      ai_commands: List[Dict[str, str]] = extract_commnads(content)
       content = clean_message(content)
       rp_historico.append(prompt_obj)
       rp_historico.append({"role": "assistant", "content": content})
 
-      for cmd in commands:
+      for cmd in ai_commands:
         if cmd["tipo"] == "RESPONDER" and cmd["acao"] == "NÃO":
           send_msg = False
         elif cmd["tipo"] == "REAGIR":
