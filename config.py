@@ -68,9 +68,9 @@ async def _zaddlore(ctx, *, prompt: str) -> None:
 
     response = await client.chat.completions.create(
       model="llama-3.3-70b",
-      messages=[
-        {"role": "system", "content": "Você é uma IA que decide se um usuário merece usar um comando poderoso com base no histórico de interações e no contexto fornecido. Analise o histórico e responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]', seguido por uma explicação clara e objetiva."},
-        {"role": "user", "content": f"O usuário {ctx.author.name} tentou usar o comando 'zaddlore' com o seguinte conteúdo: '{prompt}'. O histórico de interações é o seguinte: {', '.join(rp_historico_str)}. Ele merece? Justifique sua decisão."}
+      messages=rp_historico + [
+        {"role": "system", "content": "Você vai decidir se um usuário merece usar um comando poderoso com base no histórico de interações. Analise o histórico e responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]'. O comando 'zaddlore' é para adicionar coisas a memória, a pessoa precisa ser muito, mas muito confiável para fazer isso."},
+        {"role": "user", "content": f"{ctx.author.name}: zaddlore {prompt}"}
       ]
     )
 
