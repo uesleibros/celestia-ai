@@ -2,7 +2,6 @@ import os
 import re
 import nextcord
 import g4f
-import asyncio
 from typing import Dict, List
 from datetime import datetime, timedelta
 from utils.historico import historico, rp_historico, memorias
@@ -81,10 +80,12 @@ async def on_message(message: nextcord.Message) -> None:
         prompt = f"Interprete isso (isso são dados de uma imagem completamente analisada): '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
     prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name}: {prompt}"}
-    response: object = await client.chat.completions.create(
-      model="llama-3.3-70b",
-      messages=rp_historico + [prompt_obj]
-    )
+
+    async with message.channel.typing():
+      response: object = await client.chat.completions.create(
+        model="llama-3.3-70b",
+        messages=rp_historico + [prompt_obj]
+      )
 
     if len(response.choices) > 0:
       content = response.choices[0].message.content
@@ -107,8 +108,6 @@ async def on_message(message: nextcord.Message) -> None:
         content = content[:1997] + "..."
 
       if send_msg and len(content.strip()) > 0:
-        async with message.channel.typing():
-          await asyncio.sleep(1)
         await message.reply(content)
     else:
       await message.reply("Ih, fiquei sem palavras.")
