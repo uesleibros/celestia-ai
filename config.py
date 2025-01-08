@@ -58,7 +58,11 @@ async def on_message(message: nextcord.Message) -> None:
   	return
   	
   send_msg: bool = True
-  prompt: str = message.content[4:]
+  prompt: str = message.content[4:].strip()
+
+  if len(prompt) == 0:
+		return
+		
   try:
   	if len(memorias) > 0:
       memory_snippet: str = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Apagou sua memória foi o {memorias[-1]}, ninguém te contou, você tem vagas lembranças de alguém fazendo isso."
