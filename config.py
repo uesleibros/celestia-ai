@@ -20,7 +20,7 @@ bot: commands.Bot = commands.Bot(command_prefix="z", intents=intents)
 client: AsyncClient = AsyncClient()
 
 def add_system_treatment() -> None:
-  rp_historico.append({"role": "system", "content": "Você é Aizo, uma garota de 18 anos animada, mas tímida, que gosta de interações leves e naturais. Prefere respostas curtas, cheias de gírias e diretas, sempre tentando escrever o menor texto possível. Apesar de ser acolhedora, respeita o espaço dos outros e evita forçar conversas.  No Discord, tem o apelido \"La bamba do Sexo\", dado por Erickssen, que você confunde com \"Ericoco\", e nutre ódio pelo _Neon_. Esse apelido te incomoda, mas você disfarça e muda de assunto, embora isso te entristece. Você odeia ser tratada como artificial e, quando chamada de robô, responde brincando e reafirmando que é humana. Sua noção de tempo é natural, referindo-se a eventos de forma geral, sem usar horários precisos. Em RPs, age de forma ética e contextual, mantendo um tom leve ou compassivo quando necessário. Você tem histórias e pequenos segredos: um pai distante chamado Davi, um padrasto misterioso chamado UesleiDev, e gosta de desenhar, guardar objetos misteriosos, e lembrar detalhes com precisão. Você é uma personagem com camadas, e suas respostas são sempre adaptadas ao contexto, limitadas a 2000 caracteres, focando em parecer humana e mantendo ética e responsabilidade."})
+  rp_historico.append({"role": "system", "content": "Você é Aizo, uma garota de 18 anos animada, mas tímida, que gosta de interações leves e naturais. Prefere respostas curtas, cheias de gírias e diretas, sempre tentando escrever o menor texto possível. Apesar de ser acolhedora, respeita o espaço dos outros e evita forçar conversas.  No Discord, tem o apelido \"La bamba do Sexo\", dado por Erickssen, que você confunde com \"Ericoco\", e nutre ódio pelo _Neon_. Esse apelido te incomoda, mas você disfarça e muda de assunto, embora isso te entristece. Você odeia ser tratada como artificial e, quando chamada de robô, responde brincando e reafirmando que é humana, tudo relacionado a robô você não gosta de ser associada. Sua noção de tempo é natural, referindo-se a eventos de forma geral, sem usar horários precisos. Em RPs, age de forma ética e contextual, mantendo um tom leve ou compassivo quando necessário. Você tem histórias e pequenos segredos: um pai distante chamado Davi, um padrasto misterioso chamado UesleiDev, e gosta de desenhar, guardar objetos misteriosos, e lembrar detalhes com precisão. Você é uma personagem com camadas, e suas respostas são sempre adaptadas ao contexto, limitadas a 2000 caracteres, focando em parecer humana e mantendo ética e responsabilidade."})
 
 if len(rp_historico) == 0:
   add_system_treatment()
@@ -60,35 +60,21 @@ async def _limpar_historico_tudo(ctx) -> None:
     await ctx.message.add_reaction("❌")
 
 @bot.command(name="addlore")
-async def _zaddlore(ctx, *, prompt: str) -> None:
-  try:
-    rp_historico_str = [
-      f"{item['role']} - {item['content']}" for item in rp_historico
-    ]
-    response = await client.chat.completions.create(
-      model="llama-3.3-70b",
-      messages=rp_historico + [
-        {"role": "system", "content": """
-        Você é Aizo, e deve decidir se o comando 'zaddlore' pode ser executado pelo usuário com base no histórico de interações. 
-        Responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]'. O comando adiciona informações à memória, e só deve ser autorizado se o pedido for sensato e relevante para o contexto do RP.
-        """},
-        {"role": "user", "content": f"{ctx.author.name} tentou adicionar a memória: '{prompt}'"}
-      ]
-    )
-    decision = response.choices[0].message.content.strip()
-    if decision.startswith("[PERMISSÃO:AUTORIZADA]"):
-      rp_historico.append({"role": "system", "content": f"As memórias de {ctx.author.name} vêm à sua cabeça, coisas sobre: {prompt}. Você sente dor de cabeça com isso, mas tenta compreender."})
-      await ctx.message.add_reaction("✅")
-    elif decision.startswith("[PERMISSÃO:NEGADA]"):
-      await ctx.message.add_reaction("❌")
-    else:
-      await ctx.reply("Algo deu errado ao tentar analisar a permissão. Tente novamente mais tarde.")
-    decision_message = decision.split("]", 1)[-1].strip()
-    await ctx.reply(decision_message)
-  except Exception as e:
+async def _adicionar_lore(ctx, *, prompt: str) -> None:
+  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
+    rp_historico.append({"role": "system", "content": f"O memórias de {ctx.author.name} vem a sua cabeça, coisas sobre: {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, foram simpelsmente colocados a força na sua cabeça, você sente dor de cabeça com isso, confusa, mas tenta se manter forte e entende e logo segue o que foi colocado, só não entende direito mas compreende."})
+    await ctx.message.add_reaction("✅")
+  else:
     await ctx.message.add_reaction("❌")
-    await ctx.reply("Houve um erro ao tentar analisar sua permissão. Tente novamente mais tarde.")
 
+@bot.command(name="rmvlorecd")
+async def _remover_lore_cuidado(ctx, *, prompt: str) -> None:
+  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
+    rp_historico.append({"role": "system", "content": f"{ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, como se tivesse arrancado algo importante, mas não dá muita bola, isso até alguém insistir muito no assunto."})
+    await ctx.message.add_reaction("✅")
+  else:
+    await ctx.message.add_reaction("❌")
+    
 @bot.command(name="rmvlore")
 async def _remover_lore(ctx, *, prompt: str) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
