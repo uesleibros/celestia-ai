@@ -2,7 +2,6 @@ import os
 import re
 import nextcord
 import g4f
-import asyncio
 from typing import Dict, List
 from datetime import datetime, timedelta
 from utils.historico import historico, rp_historico, memorias
@@ -129,7 +128,7 @@ async def analyze_image(prompt: str, image: bytes) -> str:
 
 @bot.command(name="rp")
 async def rp(ctx, *, prompt: str) -> None:
-  send_msg: bool = True
+  # send_msg: bool = True
   try:
     if len(memorias) > 0:
       memory_snippet: str = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Apagou sua memória foi o {memorias[-1]}, ninguém te contou, você tem vagas lembranças de alguém fazendo isso."
@@ -146,11 +145,12 @@ async def rp(ctx, *, prompt: str) -> None:
         prompt = f"Interprete isso (isso são dados de uma imagem completamente analisada): '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
     prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"}
-    
-    response = await client.chat.completions.create(
-      model="llama-3.3-70b",
-      messages=rp_historico + [prompt_obj]
-    )
+
+    async with ctx.typing():
+      response = await client.chat.completions.create(
+        model="llama-3.3-70b",
+        messages=rp_historico + [prompt_obj]
+      )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       ai_commands: List[Dict[str, str]] = extract_commands(content)
@@ -159,20 +159,16 @@ async def rp(ctx, *, prompt: str) -> None:
       content = clean_message(content)
 
       for cmd in ai_commands:
-        if cmd["tipo"] == "RESPONDER" and cmd["acao"] == "NÃO":
-          send_msg = False
-        elif cmd["tipo"] == "REAGIR":
+        if cmd["tipo"] == "REAGIR":
           emoji = bot.get_emoji(cmd["acao"])
           await ctx.message.add_reaction(emoji if emoji else cmd["acao"])
       if len(content) > 2000:
         content = content[:1997] + "..."
       if send_msg:
-        async with ctx.typing():
-          await asyncio.sleep(1)
         await ctx.reply(content)
       else:
         return
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
-    await ctx.reply("Não entendi, poderia tentar de novo?" + str(e))
+    await ctx.reply("Não entendi, poderia tentar de novo?")
