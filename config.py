@@ -154,9 +154,9 @@ async def rp(ctx, *, prompt: str) -> None:
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       ai_commands: List[Dict[str, str]] = extract_commands(content)
-      content = clean_message(content)
       rp_historico.append(prompt_obj)
       rp_historico.append({"role": "assistant", "content": content})
+      content = clean_message(content)
 
       for cmd in ai_commands:
         if cmd["tipo"] == "RESPONDER" and cmd["acao"] == "NÃO":
@@ -170,8 +170,10 @@ async def rp(ctx, *, prompt: str) -> None:
         async with ctx.typing():
           await asyncio.sleep(1)
         await ctx.reply(content)
+      else:
+        await ctx.defer()
+        return
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
-    if send_msg:
-      await ctx.reply("Não entendi, poderia tentar de novo?" + str(e))
+    await ctx.reply("Não entendi, poderia tentar de novo?")
