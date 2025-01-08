@@ -49,27 +49,27 @@ async def analyze_image(prompt: str, image: bytes) -> str:
 
 @bot.event
 async def on_message(message: nextcord.Message) -> None:
-	if message.author.bot or not message.content.startswith("zrp "):
-	   return
-    
+  if message.author.bot or not message.content.startswith("zrp "):
+    return
+
   permissions: object = message.channel.permissions_for(message.guild.me)
-  
+
   if not permissions.send_messages:
-  	return
-  	
+    return
+
   send_msg: bool = True
   prompt: str = message.content[4:].strip()
 
   if len(prompt) == 0:
-		return
-		
+    return
+
   try:
-  	if len(memorias) > 0:
+    if len(memorias) > 0:
       memory_snippet: str = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Apagou sua memória foi o {memorias[-1]}, ninguém te contou, você tem vagas lembranças de alguém fazendo isso."
       rp_historico.insert(1, {"role": "system", "content": memory_snippet})
       memorias.clear()
     current_time: str = (datetime.utcnow() - timedelta(hours=3)).strftime("%H:%M")
-    
+
     image_bytes: bytes = None
     image_response: str = None
     if message.attachments:
@@ -83,28 +83,28 @@ async def on_message(message: nextcord.Message) -> None:
       model="llama-3.3-70b",
       messages=rp_historico + [prompt_obj]
     )
-      
+
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       ai_commands: List[Dict[str, str]] = extract_commands(content)
       rp_historico.append(prompt_obj)
       rp_historico.append({"role": "assistant", "content": content})
       content = clean_message(content)
-      
+
       for cmd in ai_commands:
         if cmd["tipo"] == "RESPONDER" and cmd["acao"] == "NÃO":
-        	send_msg = False
+          send_msg = False
         elif cmd["tipo"] == "REAGIR":
           emoji = bot.get_emoji(cmd["acao"])
           await message.add_reaction(emoji if emoji else cmd["acao"])
 
       if len(content) > 2000:
         content = content[:1997] + "..."
-       
+
       if send_msg:
-	      async with message.channel.typing():
-	      	await asyncio.sleep(1)
-	      await message.reply(content)
+        async with message.channel.typing():
+          await asyncio.sleep(1)
+        await message.reply(content)
     else:
       await message.reply("Ih, fiquei sem palavras.")
   except Exception as e:
