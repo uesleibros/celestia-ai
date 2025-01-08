@@ -62,45 +62,36 @@ async def _limpar_historico_tudo(ctx) -> None:
 @bot.command(name="addlore")
 async def _zaddlore(ctx, *, prompt: str) -> None:
   try:
+    rp_historico_str = [
+      f"{item['role']} - {item['content']}" for item in rp_historico
+    ]
+
     response = await client.chat.completions.create(
       model="llama-3.3-70b",
       messages=[
-        {"role": "system", "content": "Você é uma IA que decide se um usuário merece usar um comando poderoso baseado no histórico de interações e no contexto. Responda de forma clara e direta, explicando sua decisão, sem incluir '[PERMISSÃO:TIPO]' na mensagem final."},
-        {"role": "user", "content": f"O usuário {ctx.author.name} tentou usar o comando 'zaddlore' com o seguinte conteúdo: '{prompt}'. Ele merece? Analise o contexto e a moralidade da ação."}
+        {"role": "system", "content": "Você é uma IA que decide se um usuário merece usar um comando poderoso com base no histórico de interações e no contexto fornecido. Analise o histórico e responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]', seguido por uma explicação clara e objetiva."},
+        {"role": "user", "content": f"O usuário {ctx.author.name} tentou usar o comando 'zaddlore' com o seguinte conteúdo: '{prompt}'. O histórico de interações é o seguinte: {', '.join(rp_historico_str)}. Ele merece? Justifique sua decisão."}
       ]
     )
+
     decision = response.choices[0].message.content.strip()
 
-    if "AUTORIZADA" in decision:
+    if decision.startswith("[PERMISSÃO:AUTORIZADA]"):
       rp_historico.append({"role": "system", "content": f"As memórias de {ctx.author.name} vêm à sua cabeça, coisas sobre: {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, foram simplesmente colocadas à força na sua cabeça. Você sente dor de cabeça com isso, mas tenta se manter forte e compreende o que foi colocado."})
       await ctx.message.add_reaction("✅")
-    elif "NEGADA" in decision:
+    elif decision.startswith("[PERMISSÃO:NEGADA]"):
       await ctx.message.add_reaction("❌")
     else:
-      decision = "Algo deu errado ao analisar a permissão. Por favor, tente novamente mais tarde."
+      decision = "[PERMISSÃO:NEGADA] Algo deu errado ao analisar a permissão. Por favor, tente novamente mais tarde."
       await ctx.message.add_reaction("❌")
 
-    await ctx.reply(decision)
+    decision_message = decision.split("]", 1)[-1].strip()
+    await ctx.reply(decision_message)
+
   except Exception as e:
     await ctx.message.add_reaction("❌")
     await ctx.reply("Houve um erro ao tentar analisar sua permissão. Tente novamente mais tarde.")
 
-@bot.command(name="addlorehard")
-async def _adicionar_lore(ctx, *, prompt: str) -> None:
-  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
-    rp_historico.append({"role": "system", "content": f"O memórias de {ctx.author.name} vem a sua cabeça, coisas sobre: {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, foram simpelsmente colocados a força na sua cabeça, você sente dor de cabeça com isso, confusa, mas tenta se manter forte e entende e logo segue o que foi colocado, só não entende direito mas compreende."})
-    await ctx.message.add_reaction("✅")
-  else:
-    await ctx.message.add_reaction("❌")
-
-@bot.command(name="rmvlorecd")
-async def _remover_lore_cuidado(ctx, *, prompt: str) -> None:
-  if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
-    rp_historico.append({"role": "system", "content": f"{ctx.author.name} retirou coisas da sua memória relacionada a {prompt}. Você se sente meio confusa ao ser questionada sobre coisas do tipo, como se tivesse arrancado algo importante, mas não dá muita bola, isso até alguém insistir muito no assunto."})
-    await ctx.message.add_reaction("✅")
-  else:
-    await ctx.message.add_reaction("❌")
-    
 @bot.command(name="rmvlore")
 async def _remover_lore(ctx, *, prompt: str) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
