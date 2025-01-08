@@ -106,7 +106,8 @@ async def on_message(message: nextcord.Message) -> None:
       if send_msg:
         async with message.channel.typing():
           await asyncio.sleep(1)
-        await message.reply(content)
+        if len(content.strip()) > 0:
+          await message.reply(content)
     else:
       await message.reply("Ih, fiquei sem palavras.")
   except Exception as e:
