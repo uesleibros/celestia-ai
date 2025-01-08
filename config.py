@@ -162,7 +162,9 @@ async def rp(ctx, *, prompt: str) -> None:
         if cmd["tipo"] == "RESPONDER" and cmd["acao"] == "NÃO":
           send_msg = False
         elif cmd["tipo"] == "REAGIR":
-          await ctx.message.add_reaction(cmd["acao"])
+          emoji = bot.get_emoji(cmd["acao"])
+          if emoji:
+            await ctx.message.add_reaction(emoji)
       if len(content) > 2000:
         content = content[:1997] + "..."
       if send_msg:
