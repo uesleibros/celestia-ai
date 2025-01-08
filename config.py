@@ -173,4 +173,4 @@ async def rp(ctx, *, prompt: str) -> None:
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
-    await ctx.reply("Não entendi, poderia tentar de novo?")
+    await ctx.reply("Não entendi, poderia tentar de novo?" + str(e))
