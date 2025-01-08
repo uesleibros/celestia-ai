@@ -49,11 +49,14 @@ async def analyze_image(prompt: str, image: bytes) -> str:
 
 @bot.event
 async def on_message(message: nextcord.Message) -> None:
-  if message.author.bot or not message.content.startswith("zrp "):
+  if message.author.bot:
     return
 
+  if not message.content.startswith("zrp "):
+    await bot.process_commands(message)
+    return
+    
   permissions: object = message.channel.permissions_for(message.guild.me)
-
   if not permissions.send_messages:
     return
 
@@ -62,7 +65,6 @@ async def on_message(message: nextcord.Message) -> None:
 
   if len(prompt) == 0:
     return
-
   try:
     if len(memorias) > 0:
       memory_snippet: str = "Você lembra vagamente de algumas coisas: " + ", ".join(memorias[:10]) + f". Apagou sua memória foi o {memorias[-1]}, ninguém te contou, você tem vagas lembranças de alguém fazendo isso."
