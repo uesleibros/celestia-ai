@@ -2,6 +2,7 @@ import os
 import re
 import nextcord
 import g4f
+import asyncio
 from typing import Dict, List
 from datetime import datetime, timedelta
 from utils.historico import historico, rp_historico, memorias
@@ -146,11 +147,10 @@ async def rp(ctx, *, prompt: str) -> None:
 
     prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {ctx.author.name}: {prompt}"}
     
-    async with ctx.typing():
-      response = await client.chat.completions.create(
-        model="llama-3.3-70b",
-        messages=rp_historico + [prompt_obj]
-      )
+    response = await client.chat.completions.create(
+      model="llama-3.3-70b",
+      messages=rp_historico + [prompt_obj]
+    )
     if len(response.choices) > 0:
       content = response.choices[0].message.content
       ai_commands: List[Dict[str, str]] = extract_commands(content)
@@ -167,6 +167,8 @@ async def rp(ctx, *, prompt: str) -> None:
       if len(content) > 2000:
         content = content[:1997] + "..."
       if send_msg:
+        async with ctx.typing():
+          await asyncio.sleep(1)
         await ctx.reply(content)
       else:
         return
