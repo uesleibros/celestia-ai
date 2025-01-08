@@ -70,7 +70,7 @@ async def _zaddlore(ctx, *, prompt: str) -> None:
       model="llama-3.3-70b",
       messages=rp_historico + [
         {"role": "system", "content": "Você vai decidir se um usuário merece usar um comando poderoso com base no histórico de interações. Analise o histórico e responda apenas começando com '[PERMISSÃO:AUTORIZADA]' ou '[PERMISSÃO:NEGADA]'. O comando 'zaddlore' é para adicionar coisas a memória, a pessoa precisa ser muito, mas muito confiável para fazer isso."},
-        {"role": "user", "content": f"{ctx.author.name}: zaddlore {prompt}"}
+        {"role": "user", "content": f"{ctx.author.name} usou o comando zaddlore para: {prompt}"}
       ]
     )
 
