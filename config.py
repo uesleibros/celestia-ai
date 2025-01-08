@@ -170,8 +170,6 @@ async def rp(ctx, *, prompt: str) -> None:
         async with ctx.typing():
           await asyncio.sleep(1)
         await ctx.reply(content)
-      else:
-        return
     else:
       await ctx.reply("Ih, fiquei sem palavras.")
   except Exception as e:
