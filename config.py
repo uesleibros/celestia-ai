@@ -83,7 +83,12 @@ async def on_message(message: nextcord.Message) -> None:
 
     response: object = await client.chat.completions.create(
       model="llama-3.3-70b",
-      messages=rp_historico + [prompt_obj]
+      messages=rp_historico + [prompt_obj],
+      temperature=0.8,
+      presence_penalty=0.8,
+      frequency_penalty=0.6,
+      top_p=0.9,
+      max_tokens=200
     )
 
     if len(response.choices) > 0:
