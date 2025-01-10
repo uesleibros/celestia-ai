@@ -9,7 +9,7 @@ TEXT_MODELS: Dict[str, str] = {
   "LLAMA 3.1-8b (Suporta Imagens)": "llama-3.1-8b",
   "LLAMA 3.1-70b (Suporta Imagens)": "llama-3.1-70b",
   "LLAMA 3.2-11b (Suporta Imagens)": "llama-3.2-11b",
-  "LLAMA 3.3-70b (Suporta Imagens)": "llama-3.3-70b",
+  "LLAMA 3.3-70b": "llama-3.3-70b",
   "Blackbox AI (Suporta Imagens)": "blackboxai",
   "Mixtral 7b": "mixtral-7b",
   "Mistral Nemo": "mistral-nemo",
