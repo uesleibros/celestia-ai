@@ -14,6 +14,7 @@ TOKEN: str = os.getenv("TOKEN")
 
 intents: nextcord.Intents = nextcord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 bot: commands.Bot = commands.Bot(command_prefix="z", intents=intents)
 client: AsyncClient = AsyncClient()

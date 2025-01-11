@@ -1,5 +1,5 @@
 from config import bot
-from utils.historico import rp_historico, memorias, historico
+from utils.historico import rp_historico, memorias, historico, system_context
 from utils.rp.start_sys_prompt import add_system_treatment
 
 @bot.command(name="clshist")
@@ -14,6 +14,7 @@ async def _limpar_historico(ctx) -> None:
 async def _limpar_historico_tudo(ctx) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
     historico.clear()
+    system_context = None
 
     for item in rp_historico:
       if item["role"] != "system":
@@ -30,6 +31,7 @@ async def _limpar_historico_tudo(ctx) -> None:
   if ctx.author.id == 764259870563631114 or ctx.author.guild_permissions.administrator:
     historico.clear()
     memorias.clear()
+    system_context = None
     rp_historico.clear()
     add_system_treatment()
     await ctx.message.add_reaction("✅")

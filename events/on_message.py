@@ -2,11 +2,13 @@ import nextcord
 from config import client, bot
 from utils.rp.image import analyze_image
 from utils.rp.commands import extract_commands, clean_message
-from utils.historico import memorias, rp_historico
+from utils.historico import memorias, rp_historico, system_context
+from utils.rp.sys_context import create_system_context
 from datetime import datetime, timedelta
 
 @bot.event
 async def on_message(message: nextcord.Message) -> None:
+  global system_context
   if message.author.bot:
     return
 
@@ -38,16 +40,23 @@ async def on_message(message: nextcord.Message) -> None:
       if image_response:
         prompt = f"Interprete isso (isso são dados de uma imagem completamente analisada): '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
-    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name}: {prompt}"}
+    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name} (ID: {message.author.id} | APELIDO: {message.author.nick} | SERVIDOR: {message.guild.name} | CANAL ID: {message.channel.id} | FOTO DE PERFIL: {message.author.avatar.url if message.author.avatar else 'Nenhuma'} | FOTO DE PERFIL DO SERVIDOR: {message.author.guild_avatar.url if message.author.guild_avatar.url else 'Nenhuma'} | CARGOS: {', '.join([role.name for role in message.author.roles])}): {prompt}"}
 
+    if not system_context:
+      system_context = await create_system_context(message.guild)
+
+    system_context_object = {
+      "role": "system",
+      "content": f"Contexto atual do servidor, use essas informações quando precisar:\n{system_context}"
+    }
     response: object = await client.chat.completions.create(
       model="llama-3.3-70b",
-      messages=rp_historico + [prompt_obj],
-      temperature=1,
+      messages=[system_context_object] + rp_historico + [prompt_obj],
+      temperature=0.5,
       presence_penalty=0.6,
       frequency_penalty=0.4,
       top_p=1,
-      max_tokens=100
+      max_tokens=250
     )
 
     if len(response.choices) > 0:
