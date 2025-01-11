@@ -1,4 +1,5 @@
 import nextcord
+import asyncio
 from config import client, bot
 from utils.rp.image import analyze_image
 from utils.rp.commands import extract_commands, clean_message
@@ -70,25 +71,34 @@ async def on_message(message: nextcord.Message) -> None:
       rp_historico.append({"role": "assistant", "content": content})
       content = clean_message(content)
 
+      tasks = []
+
       for cmd in ai_commands:
         if cmd["tipo"] == "RESPONDER" and cmd["acao"] == "NAO":
           send_msg = False
         elif cmd["tipo"] == "REAGIR":
           emoji = bot.get_emoji(cmd["acao"])
-          try:
-            await message.add_reaction(emoji if emoji else cmd["acao"])
-          except Exception as e:
-            pass
+          task = asyncio.create_task(add_reaction(message, emoji if emoji else cmd["acao"]))
+           tasks.append(task)
 
       if len(content) > 2000:
         content = content[:1997] + "..."
 
       try:
         if send_msg and len(content.strip()) > 0:
-          await message.reply(content)
+          task_send_msg = asyncio.create_task(message.reply(content))
+          tasks.append(task_send_msg)
+
+        await asyncio.gather(*tasks)
       except Exception as e:
         print(f"Erro ao enviar mensagem: {e}")
     else:
       await message.reply("Ih, fiquei sem palavras.")
   except Exception as e:
     await message.reply("Não entendi, poderia tentar de novo?" + str(e))
+
+async def add_reaction(message: nextcord.Message, emoji: str) -> None:
+  try:
+    await message.add_reaction(emoji)
+  except Exception as e:
+    pass
