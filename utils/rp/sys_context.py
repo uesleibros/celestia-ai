@@ -23,7 +23,6 @@ async def create_system_context(guild: nextcord.Guild) -> str:
         "type": str(channel.type)
       })
 
-  roles: List[Dict[str, str]] = [{"id": role.id, "name": role.name} for role in guild.roles]
   emojis: List[Dict[str, str]] = [{"name": emoji.name, "id": emoji.id, "mention": str(emoji)} for emoji in guild.emojis]
   created_at: List[Dict[str, str]] = guild.created_at.strftime("%d/%m/%Y %H:%M:%S")
 
@@ -33,12 +32,10 @@ async def create_system_context(guild: nextcord.Guild) -> str:
     "server_icon_url": guild.icon.url if guild.icon else None,
     "category_count": len(categories),
     "channel_count": len(guild.channels),
-    "role_count": len(guild.roles),
     "emoji_count": len(guild.emojis),
     "server_creation_date": created_at,
     "categories": categories,
     "channels_outside_categories": uncategorized_channels,
-    "roles": roles,
     "emojis": emojis
   }
 
