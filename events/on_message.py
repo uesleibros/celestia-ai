@@ -2,7 +2,7 @@ import nextcord
 from config import client, bot
 from utils.rp.image import analyze_image
 from utils.rp.commands import extract_commands, clean_message
-from utils.historico import memorias, rp_historico, system_context
+from utils.historico import memorias, rp_historico, system_context, rp_modelo
 from utils.rp.sys_context import create_system_context
 from datetime import datetime, timedelta
 
@@ -58,7 +58,7 @@ async def on_message(message: nextcord.Message) -> None:
       "content": f"Contexto atual do servidor, use essas informações quando precisar:\n{system_context}"
     }
     response: object = await client.chat.completions.create(
-      model="llama-3.3-70b",
+      model=rp_modelo,
       messages=[system_context_object] + rp_historico + [prompt_obj],
       max_tokens=200
     )

@@ -26,3 +26,5 @@ TEXT_MODELS: Dict[str, str] = {
   "Openchat 3.5": "openchat-3.5",
   "Uncensored AI (Não usa memória para Fins Educacionais)": "evil"
 }
+
+DEFAULT_RP_MODEL: str = "qwen-2.5-72b"
