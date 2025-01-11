@@ -21,6 +21,8 @@ async def on_message(message: nextcord.Message) -> None:
     return
 
   send_msg: bool = True
+  send_dm: bool = False
+  dm_channel: nextcord.DMChannel = None
   prompt: str = message.content[4:].strip()
 
   if len(prompt) == 0:
@@ -40,7 +42,7 @@ async def on_message(message: nextcord.Message) -> None:
       if image_response:
         prompt = f"Interprete isso (isso são dados de uma imagem completamente analisada): '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
-    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name} (ID: {message.author.id} | APELIDO: {message.author.nick} | SERVIDOR: {message.guild.name} | CANAL ID: {message.channel.id} | FOTO DE PERFIL: {message.author.avatar.url if message.author.avatar else 'Nenhuma'} | FOTO DE PERFIL DO SERVIDOR: {message.author.guild_avatar.url if message.author.guild_avatar else 'Nenhuma'} | CARGOS: {', '.join([role.name for role in message.author.roles])}): {prompt}"}
+    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name} (ID: {message.author.id} | SERVIDOR: {message.guild.name} | CANAL ID: {message.channel.id} | FOTO DE PERFIL: {message.author.avatar.url if message.author.avatar else 'Nenhuma'} | FOTO DE PERFIL DO SERVIDOR: {message.author.guild_avatar.url if message.author.guild_avatar else 'Nenhuma'} | CARGOS: {', '.join([role.name for role in message.author.roles])}): {prompt}"}
 
     if not system_context:
       system_context = await create_system_context(message.guild)
@@ -52,7 +54,7 @@ async def on_message(message: nextcord.Message) -> None:
     response: object = await client.chat.completions.create(
       model="llama-3.3-70b",
       messages=[system_context_object] + rp_historico + [prompt_obj],
-      temperature=0.8,
+      temperature=1,
       max_tokens=200
     )
 
@@ -72,12 +74,21 @@ async def on_message(message: nextcord.Message) -> None:
             await message.add_reaction(emoji if emoji else cmd["acao"])
           except Exception as e:
             pass
+        elif cmd["tipo"] == "DM":
+          user = await bot.fetch_user(int(cmd["acao"]))
+          dm_channel = await user.create_dm()
+          send_dm = True
 
       if len(content) > 2000:
         content = content[:1997] + "..."
 
-      if send_msg and len(content.strip()) > 0:
-        bot_msg: nextcord.Message = await message.reply(content)
+      try:
+        if send_dm and dm_channel:
+          await dm_channel.send(content)
+        elif send_msg and len(content.strip()) > 0:
+          await message.reply(content)
+      except Exception as e:
+        print(f"Erro ao enviar mensagem: {e}")
     else:
       await message.reply("Ih, fiquei sem palavras.")
   except Exception as e:
