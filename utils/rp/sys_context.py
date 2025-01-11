@@ -32,11 +32,10 @@ async def create_system_context(guild: nextcord.Guild) -> str:
     "server_icon_url": guild.icon.url if guild.icon else None,
     "category_count": len(categories),
     "channel_count": len(guild.channels),
-    "emoji_count": len(guild.emojis),
     "server_creation_date": created_at,
     "categories": categories,
     "channels_outside_categories": uncategorized_channels,
-    "emojis": emojis
+    "emojis": emojis[20:]
   }
 
   return json.dumps(server_info, indent=2)
