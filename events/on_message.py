@@ -21,8 +21,6 @@ async def on_message(message: nextcord.Message) -> None:
     return
 
   send_msg: bool = True
-  send_dm: bool = False
-  dm_channel: nextcord.DMChannel = None
   prompt: str = message.content[4:].strip()
 
   if len(prompt) == 0:
@@ -74,18 +72,12 @@ async def on_message(message: nextcord.Message) -> None:
             await message.add_reaction(emoji if emoji else cmd["acao"])
           except Exception as e:
             pass
-        elif cmd["tipo"] == "DM":
-          user = await bot.fetch_user(int(cmd["acao"]))
-          dm_channel = await user.create_dm()
-          send_dm = True
 
       if len(content) > 2000:
         content = content[:1997] + "..."
 
       try:
-        if send_dm and dm_channel:
-          await dm_channel.send(content)
-        elif send_msg and len(content.strip()) > 0:
+        if send_msg and len(content.strip()) > 0:
           await message.reply(content)
       except Exception as e:
         print(f"Erro ao enviar mensagem: {e}")
