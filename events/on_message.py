@@ -40,7 +40,7 @@ async def on_message(message: nextcord.Message) -> None:
       if image_response:
         prompt = f"Interprete isso (isso são dados de uma imagem completamente analisada): '{image_response}'. Agora, voltando para o assunto, o que você acha disso? Pergunta feita: {prompt}."
 
-    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name} (ID: {message.author.id} | APELIDO: {message.author.nick} | SERVIDOR: {message.guild.name} | CANAL ID: {message.channel.id} | FOTO DE PERFIL: {message.author.avatar.url if message.author.avatar else 'Nenhuma'} | FOTO DE PERFIL DO SERVIDOR: {message.author.guild_avatar.url if message.author.guild_avatar.url else 'Nenhuma'} | CARGOS: {', '.join([role.name for role in message.author.roles])}): {prompt}"}
+    prompt_obj: Dict[str, str] = {"role": "user", "content": f"[{current_time}] {message.author.name} (ID: {message.author.id} | APELIDO: {message.author.nick} | SERVIDOR: {message.guild.name} | CANAL ID: {message.channel.id} | FOTO DE PERFIL: {message.author.avatar.url if message.author.avatar else 'Nenhuma'} | FOTO DE PERFIL DO SERVIDOR: {message.author.guild_avatar.url if message.author.guild_avatar else 'Nenhuma'} | CARGOS: {', '.join([role.name for role in message.author.roles])}): {prompt}"}
 
     if not system_context:
       system_context = await create_system_context(message.guild)
