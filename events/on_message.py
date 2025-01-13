@@ -3,13 +3,11 @@ import asyncio
 from config import client, bot
 from utils.rp.image import analyze_image
 from utils.rp.commands import extract_commands, clean_message
-from utils.historico import memorias, rp_historico, system_context, rp_modelo
-from utils.rp.sys_context import create_system_context
+from utils.historico import memorias, rp_historico, rp_modelo
 from datetime import datetime, timedelta
 
 @bot.event
 async def on_message(message: nextcord.Message) -> None:
-  global system_context
   if message.author.bot:
     return
 
@@ -51,16 +49,9 @@ async def on_message(message: nextcord.Message) -> None:
                  f"ATIVIDADES: {', '.join([str(activity) for activity in message.author.activities]) if message.author.activities else 'Nenhuma'}): {prompt}"
     }
 
-    if not system_context:
-      system_context = await create_system_context(message.guild)
-
-    system_context_object = {
-      "role": "system",
-      "content": f"Contexto atual do servidor, use essas informações quando precisar:\n{system_context}"
-    }
     response: object = await client.chat.completions.create(
       model=rp_modelo,
-      messages=[system_context_object] + rp_historico + [prompt_obj],
+      messages=rp_historico + [prompt_obj],
       max_tokens=200
     )
 
