@@ -79,7 +79,7 @@ async def on_message(message: nextcord.Message) -> None:
         elif cmd["tipo"] == "REAGIR":
           emoji = bot.get_emoji(cmd["acao"])
           task = asyncio.create_task(add_reaction(message, emoji if emoji else cmd["acao"]))
-           tasks.append(task)
+          tasks.append(task)
 
       if len(content) > 2000:
         content = content[:1997] + "..."
