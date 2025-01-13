@@ -5,6 +5,7 @@ IMAGE_MODELS: Dict[str, str] = {
   "DALL-E 3": "dall-e-3",
   "Stable Diffusion XL": "sdxl",
   "Stable Diffusion 3": "sd-3",
+  "Stable Diffusion 3.5": "sd-3.5",
   "Flux": "flux",
   "Flux Pro": "flux-pro",
   "Flux Dev": "flux-dev",
