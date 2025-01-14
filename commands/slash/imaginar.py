@@ -39,7 +39,8 @@ async def imaginar(
 		response: object = await client.images.generate(
 			model=modelo,
 			prompt=prompt,
-			response_format="url"
+			response_format="url",
+			ignore_working=True
 		)
 		
 		if len(response.data) > 0:
