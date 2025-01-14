@@ -40,7 +40,9 @@ async def imaginar(
 			model=modelo,
 			prompt=prompt,
 			response_format="url",
-			ignore_working=True
+			ignore_working=True,
+			ignore_stream=True,
+			ignored=True
 		)
 		
 		if len(response.data) > 0:
